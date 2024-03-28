@@ -40,7 +40,7 @@ const Userhaeder = () => {
           </Flex>
         </Box>
         <Box>
-          <Avatar name="M" src="/zuck-avatar.png" size={"xl"} />
+          <Avatar name="M" src="/zuck-avatar.png" size={{base:"md",md:"xl"}} />
         </Box>
       </Flex>
       <Text>Co founder of facebook chairman of meta</Text>
