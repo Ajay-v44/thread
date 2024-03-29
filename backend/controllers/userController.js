@@ -1,4 +1,3 @@
-import { request } from "express";
 import generateTokenAndSetCookie from "../helpers/generateTokenAndSetCookie.js";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
@@ -145,8 +144,8 @@ const updateUser = async (req, res) => {
 };
 
 const getUserProfile = async (req, res) => {
-  const {username} = req.params;
-  console.log(username)
+  const { username } = req.params;
+  console.log(username);
   try {
     //  select("-password") used to not get the that field from db or exclude it
     const user = await User.findOne({ username })
