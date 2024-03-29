@@ -29,6 +29,11 @@ const signupUser = async (req, res) => {
       generateTokenAndSetCookie(newUser._id, res);
       res.status(201).json({
         _id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        username: newUser.username,
+        bio: newUser.bio,
+        profilePic: newUser.profilePic,
         message: "user created successfully",
       });
     } else {

@@ -23,7 +23,16 @@ import AuthScreenAction from "../atoms/AuthScreenAction";
 
 export default function LoginCard() {
   const [showPassword, setShowPassword] = useState(false);
+  const [inputs, setinputs] = useState({
+    username: "",
+    password: "",
+  });
   const setAuthScreen = useSetRecoilState(AuthScreenAction);
+
+  const handlelogin = async () => {
+    try {
+    } catch (err) {}
+  };
   return (
     <Flex>
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
@@ -75,6 +84,7 @@ export default function LoginCard() {
                 _hover={{
                   bg: "blue.500",
                 }}
+                onClick={handlelogin}
               >
                 Login
               </Button>
