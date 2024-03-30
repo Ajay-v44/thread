@@ -1,11 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Userhaeder from "../components/Userhaeder";
 import UserPost from "../components/UserPost";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import useShowToast from "../hooks/useShowToast";
 
 const UserPage = () => {
+  const toast = useShowToast();
+  const [user, setuser] = useState(null);
+  const { username } = useParams();
+  useEffect(() => {
+    const getuser = async () => {
+      try {
+        const res = await axios.get(`/api/users/getprofile/${username}`);
+        console.log(res.data);
+        setuser(res.data);
+      } catch (err) {
+        toast("User Not Found", "User dont exits", "error");
+        console.log(err);
+      }
+    };
+    getuser();
+  }, [username]);
+  if (!user) return null;
   return (
     <>
-      <Userhaeder />
+      <Userhaeder user={user} />
       <UserPost
         likes={123}
         replies={20}

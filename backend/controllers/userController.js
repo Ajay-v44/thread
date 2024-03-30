@@ -135,22 +135,24 @@ const updateUser = async (req, res) => {
       user.password = hashPassword;
     }
     if (profilePic) {
-      if (user.profilePic) {
+      if (user.profilepic) {
         await cloudinary.uploader.destroy(
-          user.profilePic.split("/").pop().split(".")[0]
+          user.profilepic.split("/").pop().split(".")[0]
         );
       }
       const uploadResponse = await cloudinary.uploader.upload(profilePic);
-      profilePic = uploadResponse.secure_url;
+      user.profilepic = uploadResponse.secure_url;
     }
     user.name = name || user.name;
     user.email = email || email;
     user.username = username || user.username;
-    user.profilePic = profilePic || user.profilePic;
     user.bio = bio || user.bio;
     user = await user.save();
+    const userWithoutPassword = { ...user._doc };
+    delete userWithoutPassword.password;
     res.status(200).json({
       message: "updated succesfully",
+      data: userWithoutPassword,
     });
   } catch (err) {
     res.status(400).json({
@@ -162,7 +164,6 @@ const updateUser = async (req, res) => {
 
 const getUserProfile = async (req, res) => {
   const { username } = req.params;
-  console.log(username);
   try {
     //  select("-password") used to not get the that field from db or exclude it
     const user = await User.findOne({ username })
