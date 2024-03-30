@@ -1,6 +1,7 @@
 import generateTokenAndSetCookie from "../helpers/generateTokenAndSetCookie.js";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
+import { v2 as cloudinary } from "cloudinary";
 const signupUser = async (req, res) => {
   try {
     const { name, email, username, password } = req.body;
@@ -64,12 +65,10 @@ const loginUser = async (req, res) => {
     generateTokenAndSetCookie(user._id, res);
     const userWithoutPassword = { ...user._doc };
     delete userWithoutPassword.password;
-    res
-      .status(200)
-      .json({
-        data: userWithoutPassword,
-        message: `Welcomeback to threads ${user.username}`,
-      });
+    res.status(200).json({
+      data: userWithoutPassword,
+      message: `Welcomeback to threads ${user.username}`,
+    });
   } catch (err) {
     res.status(400).json({
       message: err.message,
@@ -134,6 +133,15 @@ const updateUser = async (req, res) => {
       const salt = await bcrypt.genSalt(10);
       const hashPassword = await bcrypt.hash(password, salt);
       user.password = hashPassword;
+    }
+    if (profilePic) {
+      if (user.profilePic) {
+        await cloudinary.uploader.destroy(
+          user.profilePic.split("/").pop().split(".")[0]
+        );
+      }
+      const uploadResponse = await cloudinary.uploader.upload(profilePic);
+      profilePic = uploadResponse.secure_url;
     }
     user.name = name || user.name;
     user.email = email || email;
