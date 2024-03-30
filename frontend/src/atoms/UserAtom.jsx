@@ -1,8 +1,8 @@
+import React from "react";
 import { atom } from "recoil";
 
-const userAtom = atom({
+const UserAtom = atom({
   key: "userAtom",
   default: JSON.parse(localStorage.getItem("user-threads")),
 });
-export default userAtom;
-
+export default UserAtom;

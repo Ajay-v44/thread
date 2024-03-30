@@ -20,9 +20,14 @@ import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useSetRecoilState } from "recoil";
 import AuthScreenAction from "../atoms/AuthScreenAction";
+import useShowToast from "../hooks/useShowToast";
+import UserAtom from "../atoms/UserAtom";
 
+// 4:2
 export default function LoginCard() {
+  const toast = useShowToast();
   const [showPassword, setShowPassword] = useState(false);
+  const setuser = useSetRecoilState(UserAtom);
   const [inputs, setinputs] = useState({
     username: "",
     password: "",
@@ -31,7 +36,26 @@ export default function LoginCard() {
 
   const handlelogin = async () => {
     try {
-    } catch (err) {}
+      const res = await fetch("/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(inputs),
+      });
+      const data = await res.json();
+ 
+      toast("Notification", data.message, "info");
+      localStorage.setItem("user-threads", JSON.stringify(data.data));
+      setuser(data.data);
+      setinputs({
+        username: "",
+        password: "",
+      })
+    } catch (err) {
+      toast("ERROR", "Something went wrong", "error");
+      console.log(err);
+    }
   };
   return (
     <Flex>
@@ -57,12 +81,23 @@ export default function LoginCard() {
           <Stack spacing={4}>
             <FormControl isRequired>
               <FormLabel>UserName</FormLabel>
-              <Input type="text" />
+              <Input
+                type="text"
+                onChange={(e) => {
+                  setinputs({ ...inputs, username: e.target.value });
+                }}
+                value={inputs.username}
+              />
             </FormControl>
             <FormControl isRequired>
               <FormLabel>Password</FormLabel>
               <InputGroup>
-                <Input type={showPassword ? "text" : "password"} />
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  onChange={(e) => {
+                    setinputs({ ...inputs, password: e.target.value });
+                  }}
+                />
                 <InputRightElement h={"full"}>
                   <Button
                     variant={"ghost"}

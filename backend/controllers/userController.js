@@ -62,10 +62,14 @@ const loginUser = async (req, res) => {
     if (!user || !isPasswordCrct)
       return res.status(404).json({ message: "Invalid Username Or Password" });
     generateTokenAndSetCookie(user._id, res);
-    res.status(200).json({
-      _id: user.id,
-      name: user.name,
-    });
+    const userWithoutPassword = { ...user._doc };
+    delete userWithoutPassword.password;
+    res
+      .status(200)
+      .json({
+        data: userWithoutPassword,
+        message: `Welcomeback to threads ${user.username}`,
+      });
   } catch (err) {
     res.status(400).json({
       message: err.message,

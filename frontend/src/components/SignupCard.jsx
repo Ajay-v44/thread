@@ -19,14 +19,14 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { useRecoilState, useSetRecoilState } from "recoil";
 import AuthScreenAction from "../atoms/AuthScreenAction";
-import userAtom from "../atoms/UserAtom";
+import UserAtom from "../atoms/UserAtom";
+
 
 export default function SignupCard() {
   const [showPassword, setShowPassword] = useState(false);
   const setAuthScreen = useSetRecoilState(AuthScreenAction);
-  const setuser=useRecoilState(userAtom)
+  const setuser=useSetRecoilState(UserAtom)
   const [inputs, setinputs] = useState({
     name: "",
     username: "",
@@ -57,8 +57,8 @@ export default function SignupCard() {
         duration: 9000,
         isClosable: true,
       });
-      localStorage.setItem("user-threads",JSON.stringify(data))
-      setuser(data)
+      localStorage.setItem("user-threads",JSON.stringify(data.data))
+      setuser(data.data)
     } catch (err) {
       console.log(err);
     }
