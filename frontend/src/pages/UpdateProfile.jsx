@@ -24,6 +24,7 @@ import useShowToast from "../hooks/useShowToast";
 
 export default function UpdateProfile() {
   const toast = useShowToast();
+  const [updating, setupdating] = useState(false);
   const { handleImageChange, imgUrl } = usePrevieimage();
   const [user, setuser] = useRecoilState(UserAtom);
   const [inputs, setinputs] = useState({
@@ -37,21 +38,25 @@ export default function UpdateProfile() {
   const filref = useRef(null);
   const handleOnSubmit = async (e) => {
     e.preventDefault();
+    if (updating) return
     try {
-        const res = await fetch(`/api/users/update/${user._id}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ ...inputs, profilePic: imgUrl }),
-        });
-        const data = await res.json(); 
-        
-        setuser(data.data)
-       toast("Updated",data.data.message,"success")
+      setupdating(true)
+      const res = await fetch(`/api/users/update/${user._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...inputs, profilePic: imgUrl }),
+      });
+      const data = await res.json();
+
+      setuser(data.data);
+      toast("Updated", data.data.message, "success");
     } catch (err) {
       toast("Notification", "Something Went Wrong", "error");
       console.log(err);
+    }finally{
+      setupdating(false)
     }
   };
   return (
@@ -179,6 +184,7 @@ export default function UpdateProfile() {
                 bg: "blue.500",
               }}
               type="submit"
+              isLoading={updating}
             >
               Submit
             </Button>

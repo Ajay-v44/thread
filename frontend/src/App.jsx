@@ -9,6 +9,7 @@ import { useRecoilValue } from "recoil";
 import userAtom from "./atoms/UserAtom";
 import LogoutButton from "./components/LogoutButton";
 import UpdateProfile from "./pages/UpdateProfile";
+import CreatePost from "./components/CreatePost";
 function App() {
   const user = useRecoilValue(userAtom);
   return (
@@ -31,7 +32,8 @@ function App() {
         <Route path="/:username" element={<UserPage />} />
         <Route path="/:username/post/:pid" element={<PostPage />} />
       </Routes>
-      
+      {user && <CreatePost />}
+
     </Container>
   );
 }

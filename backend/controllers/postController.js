@@ -1,12 +1,17 @@
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
-
+import { v2 as cloudinary } from "cloudinary";
 const createPost = async (req, res) => {
   try {
-    const { text, img } = req.body;
+    const { text } = req.body;
+    let { img } = req.body;
     const postedBy = req.user;
     if (!text)
       return res.status(404).json({ message: " text is a required filed" });
+    if (img) {
+      const uploadResponse = await cloudinary.uploader.upload(img);
+      img = uploadResponse.secure_url;
+    }
     const newPost = new Post({ postedBy, text, img });
     await newPost.save();
     res.status(201).json({ message: "post created successfully", newPost });

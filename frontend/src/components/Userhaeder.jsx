@@ -13,6 +13,7 @@ import useShowToast from "../hooks/useShowToast";
 const Userhaeder = ({ user }) => {
   const currentUser = useRecoilState(UserAtom);
   const toast = useShowToast();
+  const [updating,setupdating]=useState(false)
   const [following, setfollowing] = useState(
     user.followers.includes(currentUser[0]._id)
   );
@@ -23,7 +24,12 @@ const Userhaeder = ({ user }) => {
     });
   };
   const handleFollowUnFollow = async () => {
+    if (!currentUser) {
+      toast("Error", "Please login to continue", "error");
+      return;
+    }
     try {
+      setupdating(true)
       const res = await fetch(`/api/users/follow/${user._id}`, {
         method: "POST",
         headers: {
@@ -41,6 +47,8 @@ const Userhaeder = ({ user }) => {
     } catch (err) {
       console.log(err);
       toast("Error", "Something Went Wrong", "error");
+    }finally{
+      setupdating(false)
     }
   };
   return (
@@ -80,7 +88,7 @@ const Userhaeder = ({ user }) => {
           <Button size={"sm"}>update profile</Button>
         </Link>
       ) : (
-        <Button onClick={handleFollowUnFollow}>
+        <Button onClick={handleFollowUnFollow} isLoading={updating}>
           {following ? "UnFollow" : "Follow"}
         </Button>
       )}

@@ -25,6 +25,7 @@ import UserAtom from "../atoms/UserAtom";
 
 // 4:2
 export default function LoginCard() {
+  const [Loading,setLoading]=useState(false)
   const toast = useShowToast();
   const [showPassword, setShowPassword] = useState(false);
   const setuser = useSetRecoilState(UserAtom);
@@ -36,6 +37,7 @@ export default function LoginCard() {
 
   const handlelogin = async () => {
     try {
+      setLoading(true)
       const res = await fetch("/api/users/login", {
         method: "POST",
         headers: {
@@ -55,7 +57,7 @@ export default function LoginCard() {
     } catch (err) {
       toast("ERROR", "Something went wrong", "error");
       console.log(err);
-    }
+    }finally{setLoading(false)}
   };
   return (
     <Flex>
@@ -120,6 +122,7 @@ export default function LoginCard() {
                   bg: "blue.500",
                 }}
                 onClick={handlelogin}
+                isLoading={Loading}
               >
                 Login
               </Button>
