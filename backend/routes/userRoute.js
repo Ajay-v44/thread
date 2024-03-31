@@ -9,7 +9,7 @@ import {
 } from "../controllers/userController.js";
 import protectRoute from "../middleware/protectRoute.js";
 const userRouter = express.Router();
-userRouter.get("/getprofile/:username", getUserProfile);
+userRouter.get("/getprofile/:query", getUserProfile);
 userRouter.post("/signup", signupUser);
 userRouter.post("/login", loginUser);
 userRouter.post("/logout", protectRoute, logoutuser);

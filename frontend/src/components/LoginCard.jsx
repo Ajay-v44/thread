@@ -25,7 +25,7 @@ import UserAtom from "../atoms/UserAtom";
 
 // 4:2
 export default function LoginCard() {
-  const [Loading,setLoading]=useState(false)
+  const [Loading, setLoading] = useState(false);
   const toast = useShowToast();
   const [showPassword, setShowPassword] = useState(false);
   const setuser = useSetRecoilState(UserAtom);
@@ -37,7 +37,7 @@ export default function LoginCard() {
 
   const handlelogin = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const res = await fetch("/api/users/login", {
         method: "POST",
         headers: {
@@ -46,18 +46,20 @@ export default function LoginCard() {
         body: JSON.stringify(inputs),
       });
       const data = await res.json();
- 
+
       toast("Notification", data.message, "info");
       localStorage.setItem("user-threads", JSON.stringify(data.data));
       setuser(data.data);
       setinputs({
         username: "",
         password: "",
-      })
+      });
     } catch (err) {
       toast("ERROR", "Something went wrong", "error");
       console.log(err);
-    }finally{setLoading(false)}
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <Flex>
@@ -114,7 +116,7 @@ export default function LoginCard() {
             </FormControl>
             <Stack spacing={10} pt={2}>
               <Button
-                loadingText="Submitting"
+                loadingText="Logging In"
                 size="lg"
                 bg={"blue.400"}
                 color={"white"}

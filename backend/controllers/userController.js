@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import generateTokenAndSetCookie from "../helpers/generateTokenAndSetCookie.js";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
@@ -163,12 +164,21 @@ const updateUser = async (req, res) => {
 };
 
 const getUserProfile = async (req, res) => {
-  const { username } = req.params;
+  const { query}  = req.params;
+ 
   try {
-    //  select("-password") used to not get the that field from db or exclude it
-    const user = await User.findOne({ username })
+    let user
+    if (mongoose.Types.ObjectId.isValid(query)){
+      user = await User.findOne({ _id:query })
       .select("-password")
-      .select("-updatedAt");
+      .select("-updatedAt").select("-email");
+    }else{
+      user = await User.findOne({username:query })
+      .select("-password")
+      .select("-updatedAt").select("-email");
+    }
+    //  select("-password") used to not get the that field from db or exclude it
+     
     if (!user) return res.status(404).json({ message: "user not found" });
     res.status(200).json(user);
   } catch (err) {
