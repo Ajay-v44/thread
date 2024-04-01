@@ -21,11 +21,14 @@ import { useRecoilValue } from "recoil";
 import UserAtom from "../atoms/UserAtom";
 import axios from "axios";
 const Actions = ({ post }) => {
+  if (!post || !post.replies || !post.likes) {
+    return null; 
+  }
   const [reply, setreply] = useState(null);
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [Post, setPost] = useState(post);
+  const [Post, setPost] = useState(post || null);
   const user = useRecoilValue(UserAtom);
   const toast = useShowToast();
   const [liking, setliking] = useState(false);

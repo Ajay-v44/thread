@@ -6,7 +6,6 @@ import Actions from "./Actions";
 const Comment = ({ userName, createdAt, comment, avatar, likes }) => {
   const [liked, setLiked] = useState(false);
   const likesCount = liked ? 1 : 0;
-
   return (
     <div>
       <Flex gap={4} my={2} w="full">

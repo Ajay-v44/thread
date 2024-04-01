@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Avatar } from "@chakra-ui/avatar";
 import { Image } from "@chakra-ui/image";
 import { Box, Flex, Text } from "@chakra-ui/layout";
-import { BsThreeDots } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { useState } from "react";
@@ -11,11 +10,12 @@ import axios from "axios";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { useRecoilValue } from "recoil";
 import UserAtom from "../atoms/UserAtom";
+import useShowToast from "../hooks/useShowToast";
 const PostS = ({ post, postedBy }) => {
+  const toast = useShowToast();
   const currentuser = useRecoilValue(UserAtom);
   const navigate = useNavigate();
   const [data, setdata] = useState(null);
-  const [liked, setliked] = useState(false);
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -29,13 +29,23 @@ const PostS = ({ post, postedBy }) => {
     };
     getUser();
   }, [postedBy]);
+  const handleDeletePost = async (e) => {
+    e.preventDefault();
+    if (!window.confirm("Are You sure You Want to deleet this post")) return;
+    try {
+      const res = await axios.delete(`/api/post/delete/${post._id}`);
+      toast("Deleted", res.data.message, "warning");
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <Link to={`/${data?.username}/post/${post._id}`}>
       <Flex gap={3} mb={4} py={5}>
         <Flex flexDirection={"column"} alignItems={"center"}>
           <Avatar
             size="md"
-            name="Mark Zuckerberg"
+            name="Mark Zuckerberg"z
             src={data?.profilepic}
             onClick={(e) => {
               e.preventDefault();
@@ -104,7 +114,9 @@ const PostS = ({ post, postedBy }) => {
               >
                 {formatDistanceToNow(new Date(post.createdAt))} ago
               </Text>
-              {currentuser?._id === data?._id && <DeleteIcon />}
+              {currentuser?._id === data?._id && (
+                <DeleteIcon onClick={handleDeletePost} />
+              )}
             </Flex>
           </Flex>
           <Text fontSize={"sm"}>{post.text}</Text>

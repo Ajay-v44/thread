@@ -1,45 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Userhaeder from "../components/Userhaeder";
-import UserPost from "../components/UserPost";
-import { useParams } from "react-router-dom";
-import axios from "axios";
-import useShowToast from "../hooks/useShowToast";
 import { Button, Flex, Spinner } from "@chakra-ui/react";
 import PostS from "../components/PostS";
+import useGetuser from "../hooks/useGetuser";
+import useGetPosts from "../hooks/useGetPosts";
 
 const UserPage = () => {
-  const toast = useShowToast();
-  const [user, setuser] = useState(null);
-  const { username } = useParams();
-  const [Loading, setLoading] = useState(true);
-  const [Fetchpost, setFetchPost] = useState(true);
-  const [posts, setposts] = useState([]);
-  useEffect(() => {
-    const getuser = async () => {
-      try {
-        const res = await axios.get(`/api/users/getprofile/${username}`);
-        setuser(res.data);
-      } catch (err) {
-        toast("User Not Found", "User dont exits", "error");
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    const getPosts = async () => {
-      try {
-        const res = await axios.get(`/api/users/user/${username}`);
-        setposts(res.data.post);
-      } catch (err) {
-        toast("User Not Found", "User dont exits", "error");
-        console.log(err);
-      } finally {
-        setFetchPost(false);
-      }
-    };
-    getuser();
-    getPosts();
-  }, [username]);
+  const { Loading, user } = useGetuser();
+  const { posts, Fetchpost } = useGetPosts();
   if (!user && Loading) {
     return (
       <Flex justifyContent={"center"}>
