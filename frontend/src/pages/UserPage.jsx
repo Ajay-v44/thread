@@ -19,7 +19,7 @@ const UserPage = () => {
   return (
     <>
       <Userhaeder user={user} />
-      {!Fetchpost && posts?.length === 0 && (
+      {!Fetchpost && posts.length === 0 && (
         <Button>User Haven't Posted Anthing</Button>
       )}
       {Fetchpost && (

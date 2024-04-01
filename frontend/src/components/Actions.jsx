@@ -22,7 +22,7 @@ import UserAtom from "../atoms/UserAtom";
 import axios from "axios";
 const Actions = ({ post }) => {
   if (!post || !post.replies || !post.likes) {
-    return null; 
+    return null;
   }
   const [reply, setreply] = useState(null);
   const initialRef = React.useRef(null);
@@ -61,7 +61,6 @@ const Actions = ({ post }) => {
   };
   const handleReply = async () => {
     if (!user) return toast("Error", "login to reply a post", "error");
-
     try {
       const res = await axios.post(`/api/post/reply/${post._id}`, {
         text: reply,

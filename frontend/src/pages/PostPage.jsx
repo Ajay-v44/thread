@@ -18,6 +18,7 @@ import useGetSinglePost from "../hooks/useGetSinglePost";
 const PostPage = () => {
   const { Loading, user } = useGetuser();
   const { Fetchpost, post } = useGetSinglePost();
+  {post?.replies.map((reply, id) => {console.log(reply.text)})}
   if (!user && Loading) {
     <Flex justifyContent={"center"}>
       <Spinner size={"xl"} />
@@ -64,15 +65,7 @@ const PostPage = () => {
           <Flex gap={3} my={3}>
             <Actions post={post ? post : null} />
           </Flex>
-          <Flex gap={2} alignItems={"center"}>
-            <Text color={"gray.light"} fontSize={"sm"}>
-              2138 replies
-            </Text>
-            <Box w={0.5} h={0.5} borderRadius={"full"} bg={"gray.light"}></Box>
-            <Text color={"gray.light"} fontSize={"sm"}>
-              {200} likes
-            </Text>
-          </Flex>
+
           <Divider my={4} />
           <Flex justifyContent={"space-between"}>
             <Flex gap={2} alignItems={"center"}>
@@ -84,13 +77,10 @@ const PostPage = () => {
             <Button>Get</Button>
           </Flex>
           <Divider my={4} />
-          <Comment
-            comment="Looks really good"
-            createdAt="2d"
-            likes={100}
-            userName="ram"
-            avatar="https://bit.ly/ryan-florence"
-          />
+          {post.replies.map((reply, id) => (
+  <Comment key={id} reply={reply} />
+))}
+
         </>
       )}
     </>

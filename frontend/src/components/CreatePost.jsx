@@ -25,7 +25,10 @@ import usePrevieimage from "../hooks/usePrevieimage";
 import { BsFillImageFill } from "react-icons/bs";
 import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
+import { useRecoilState } from "recoil";
+import PostAtom from "../atoms/PostAtom";
 const CreatePost = () => {
+  const [posts, setposts] = useRecoilState(PostAtom);
   const [Loading, setLoading] = useState(false);
   const toast = useShowToast();
   const Max_Count = 500;
@@ -53,6 +56,7 @@ const CreatePost = () => {
         img: imgUrl,
       });
       if (res.status === 201) {
+        setposts([res.data.newPost,...posts])
         toast("Sucess", res.data.message, "success");
       }
     } catch (err) {
