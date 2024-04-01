@@ -4,18 +4,20 @@ import UserPost from "../components/UserPost";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
-import { Flex, Spinner } from "@chakra-ui/react";
+import { Button, Flex, Spinner } from "@chakra-ui/react";
+import PostS from "../components/PostS";
 
 const UserPage = () => {
   const toast = useShowToast();
   const [user, setuser] = useState(null);
   const { username } = useParams();
   const [Loading, setLoading] = useState(true);
+  const [Fetchpost, setFetchPost] = useState(true);
+  const [posts, setposts] = useState([]);
   useEffect(() => {
     const getuser = async () => {
       try {
         const res = await axios.get(`/api/users/getprofile/${username}`);
-        console.log(res.data);
         setuser(res.data);
       } catch (err) {
         toast("User Not Found", "User dont exits", "error");
@@ -24,7 +26,19 @@ const UserPage = () => {
         setLoading(false);
       }
     };
+    const getPosts = async () => {
+      try {
+        const res = await axios.get(`/api/users/user/${username}`);
+        setposts(res.data.post);
+      } catch (err) {
+        toast("User Not Found", "User dont exits", "error");
+        console.log(err);
+      } finally {
+        setFetchPost(false);
+      }
+    };
     getuser();
+    getPosts();
   }, [username]);
   if (!user && Loading) {
     return (
@@ -37,24 +51,17 @@ const UserPage = () => {
   return (
     <>
       <Userhaeder user={user} />
-      <UserPost
-        likes={123}
-        replies={20}
-        postImg="/post1.png"
-        postTitle="Lets talk about stock market"
-      />
-      <UserPost
-        likes={223}
-        replies={10}
-        postImg="/post2.jpeg"
-        postTitle="Lets talk about stock market"
-      />
-      <UserPost
-        likes={323}
-        replies={50}
-        postImg="/post3.png"
-        postTitle="Lets talk about stock market"
-      />
+      {!Fetchpost && posts?.length === 0 && (
+        <Button>User Haven't Posted Anthing</Button>
+      )}
+      {Fetchpost && (
+        <Flex justifyContent={"center"}>
+          <Spinner size={"xl"} />
+        </Flex>
+      )}
+      {posts.map((post, id) => (
+        <PostS key={id} post={post} postedBy={post.postedBy} />
+      ))}
     </>
   );
 };

@@ -1,6 +1,7 @@
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
 import { v2 as cloudinary } from "cloudinary";
+
 const createPost = async (req, res) => {
   try {
     const { text } = req.body;
@@ -97,7 +98,7 @@ const replyToPost = async (req, res) => {
     const reply = { userId, text, userProfilePic, username };
     post.replies.push(reply);
     await post.save();
-    res.status(200).json({ message: "Reply created" });
+    res.status(200).json({ message: "Reply created" ,reply:post});
   } catch (err) {
     res.status(400).json({
       message: err.message,
@@ -127,6 +128,7 @@ const getFeedPost = async (req, res) => {
     console.log(err.message);
   }
 };
+
 export {
   createPost,
   getPost,

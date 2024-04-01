@@ -15,7 +15,7 @@ const Userhaeder = ({ user }) => {
   const toast = useShowToast();
   const [updating,setupdating]=useState(false)
   const [following, setfollowing] = useState(
-    user.followers.includes(currentUser[0]._id)
+    user.followers.includes(currentUser[0]?._id)
   );
   const copyURL = () => {
     const currenturl = window.location.href;
@@ -83,7 +83,7 @@ const Userhaeder = ({ user }) => {
         </Box>
       </Flex>
       <Text>{user.bio}</Text>
-      {currentUser[0]._id == user._id ? (
+      {currentUser[0]?._id == user._id ? (
         <Link as={RouterLink} to="/update">
           <Button size={"sm"}>update profile</Button>
         </Link>

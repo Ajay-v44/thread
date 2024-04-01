@@ -3,6 +3,7 @@ import generateTokenAndSetCookie from "../helpers/generateTokenAndSetCookie.js";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import { v2 as cloudinary } from "cloudinary";
+import Post from "../models/postModel.js";
 const signupUser = async (req, res) => {
   try {
     const { name, email, username, password } = req.body;
@@ -164,21 +165,23 @@ const updateUser = async (req, res) => {
 };
 
 const getUserProfile = async (req, res) => {
-  const { query}  = req.params;
- 
+  const { query } = req.params;
+
   try {
-    let user
-    if (mongoose.Types.ObjectId.isValid(query)){
-      user = await User.findOne({ _id:query })
-      .select("-password")
-      .select("-updatedAt").select("-email");
-    }else{
-      user = await User.findOne({username:query })
-      .select("-password")
-      .select("-updatedAt").select("-email");
+    let user;
+    if (mongoose.Types.ObjectId.isValid(query)) {
+      user = await User.findOne({ _id: query })
+        .select("-password")
+        .select("-updatedAt")
+        .select("-email");
+    } else {
+      user = await User.findOne({ username: query })
+        .select("-password")
+        .select("-updatedAt")
+        .select("-email");
     }
     //  select("-password") used to not get the that field from db or exclude it
-     
+
     if (!user) return res.status(404).json({ message: "user not found" });
     res.status(200).json(user);
   } catch (err) {
@@ -189,6 +192,21 @@ const getUserProfile = async (req, res) => {
   }
 };
 
+const getuserPosts = async (req, res) => {
+  try {
+    const { username } = req.params;
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.json({ status: 404, message: "usernot found" });
+    }
+    const post = await Post.find({ postedBy: user._id }).sort({
+      createdAt: -1,
+    });
+    return res.status(200).json({post});
+  } catch (err) {
+    console.log(err);
+  }
+};
 export {
   signupUser,
   loginUser,
@@ -196,4 +214,5 @@ export {
   followUnFollowUser,
   updateUser,
   getUserProfile,
+  getuserPosts,
 };

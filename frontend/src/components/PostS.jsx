@@ -3,12 +3,17 @@ import { Avatar } from "@chakra-ui/avatar";
 import { Image } from "@chakra-ui/image";
 import { Box, Flex, Text } from "@chakra-ui/layout";
 import { BsThreeDots } from "react-icons/bs";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import { formatDistanceToNow } from "date-fns";
 import { useState } from "react";
 import Actions from "./Actions";
 import axios from "axios";
+import { DeleteIcon } from "@chakra-ui/icons";
+import { useRecoilValue } from "recoil";
+import UserAtom from "../atoms/UserAtom";
 const PostS = ({ post, postedBy }) => {
+  const currentuser = useRecoilValue(UserAtom);
+  const navigate = useNavigate();
   const [data, setdata] = useState(null);
   const [liked, setliked] = useState(false);
   useEffect(() => {
@@ -25,10 +30,18 @@ const PostS = ({ post, postedBy }) => {
     getUser();
   }, [postedBy]);
   return (
-    <Link to={"/markzuckerberg/post/1"}>
+    <Link to={`/${data?.username}/post/${post._id}`}>
       <Flex gap={3} mb={4} py={5}>
         <Flex flexDirection={"column"} alignItems={"center"}>
-          <Avatar size="md" name="Mark Zuckerberg" src={data?.profilepic} />
+          <Avatar
+            size="md"
+            name="Mark Zuckerberg"
+            src={data?.profilepic}
+            onClick={(e) => {
+              e.preventDefault();
+              navigate(`/${data.username}`);
+            }}
+          />
           <Box w="1px" h={"full"} bg="gray.light" my={2}></Box>
           <Box position={"relative"} w={"full"}>
             {post.replies.length === 0 && <Text textAlign={"center"}>🥱</Text>}
@@ -70,19 +83,30 @@ const PostS = ({ post, postedBy }) => {
         <Flex flex={1} flexDirection={"column"} gap={2}>
           <Flex justifyContent={"space-between"} w={"full"}>
             <Flex w={"full"} alignItems={"center"}>
-              <Text fontSize={"sm"} fontWeight={"bold"}>
+              <Text
+                fontSize={"sm"}
+                fontWeight={"bold"}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/${data.username}`);
+                }}
+              >
                 {data?.username}
               </Text>
               <Image src="/verified.png" w={4} h={4} ml={1} />
             </Flex>
             <Flex gap={4} alignItems={"center"}>
-              <Text fontStyle={"sm"} color={"gray.light"}>
-                1d
+              <Text
+                fontSize={"xs"}
+                textAlign={"right"}
+                w={36}
+                color={"gray.light"}
+              >
+                {formatDistanceToNow(new Date(post.createdAt))} ago
               </Text>
-              <BsThreeDots />
+              {currentuser?._id === data?._id && <DeleteIcon />}
             </Flex>
           </Flex>
-
           <Text fontSize={"sm"}>{post.text}</Text>
           {post.img && (
             <Box
@@ -94,19 +118,8 @@ const PostS = ({ post, postedBy }) => {
               <Image src={post.img} w={"full"} />
             </Box>
           )}
-
           <Flex gap={3} my={1}>
-            <Actions liked={liked} setliked={setliked} />
-          </Flex>
-
-          <Flex gap={2} alignItems={"center"}>
-            <Text color={"gray.light"} fontSize="sm">
-              {post.replies.length} replies
-            </Text>
-            <Box w={0.5} h={0.5} borderRadius={"full"} bg={"gray.light"}></Box>
-            <Text color={"gray.light"} fontSize="sm">
-              {post.likes.length} likes
-            </Text>
+            <Actions post={post} />
           </Flex>
         </Flex>
       </Flex>
