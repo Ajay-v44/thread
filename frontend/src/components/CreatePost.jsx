@@ -31,6 +31,7 @@ import { useParams } from "react-router-dom";
 import UserAtom from "../atoms/UserAtom";
 const CreatePost = () => {
   const user = useRecoilState(UserAtom);
+
   const { username } = useParams();
   const [posts, setposts] = useRecoilState(PostAtom);
   const [Loading, setLoading] = useState(false);
@@ -60,7 +61,7 @@ const CreatePost = () => {
         img: imgUrl,
       });
       if (res.status === 201) {
-        if (username === user.username) {
+        if (username === user[0].username) {
           setposts([res.data.newPost, ...posts]);
         }
         toast("Sucess", res.data.message, "success");

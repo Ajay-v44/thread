@@ -16,6 +16,7 @@ const PostS = ({ post, postedBy }) => {
   const currentuser = useRecoilValue(UserAtom);
   const navigate = useNavigate();
   const [data, setdata] = useState(null);
+  const [posts, setposts] = useState(post);
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -33,19 +34,20 @@ const PostS = ({ post, postedBy }) => {
     e.preventDefault();
     if (!window.confirm("Are You sure You Want to deleet this post")) return;
     try {
-      const res = await axios.delete(`/api/post/delete/${post._id}`);
+      const res = await axios.delete(`/api/post/delete/${posts._id}`);
       toast("Deleted", res.data.message, "warning");
     } catch (err) {
       console.log(err);
     }
   };
   return (
-    <Link to={`/${data?.username}/post/${post._id}`}>
+    <Link to={`/${data?.username}/post/${posts._id}`}>
       <Flex gap={3} mb={4} py={5}>
         <Flex flexDirection={"column"} alignItems={"center"}>
           <Avatar
             size="md"
-            name="Mark Zuckerberg"z
+            name="Mark Zuckerberg"
+            z
             src={data?.profilepic}
             onClick={(e) => {
               e.preventDefault();
@@ -54,34 +56,34 @@ const PostS = ({ post, postedBy }) => {
           />
           <Box w="1px" h={"full"} bg="gray.light" my={2}></Box>
           <Box position={"relative"} w={"full"}>
-            {post.replies.length === 0 && <Text textAlign={"center"}>🥱</Text>}
-            {post.replies[0] && (
+            {posts.replies.length === 0 && <Text textAlign={"center"}>🥱</Text>}
+            {posts.replies[0] && (
               <Avatar
                 size="xs"
                 name="John doe"
-                src={post.replies[0].userProfilePic}
+                src={posts.replies[0].userProfilePic}
                 position={"absolute"}
                 top={"0px"}
                 left="15px"
                 padding={"2px"}
               />
             )}
-            {post.replies[1] && (
+            {posts.replies[1] && (
               <Avatar
                 size="xs"
                 name="John doe"
-                src={post.replies[1].userProfilePic}
+                src={posts.replies[1].userProfilePic}
                 position={"absolute"}
                 bottom={"0px"}
                 right="-5px"
                 padding={"2px"}
               />
             )}
-            {post.replies[2] && (
+            {posts.replies[2] && (
               <Avatar
                 size="xs"
                 name="John doe"
-                src={post.replies[2].userProfilePic}
+                src={posts.replies[2].userProfilePic}
                 position={"absolute"}
                 bottom={"0px"}
                 left="4px"
@@ -112,26 +114,26 @@ const PostS = ({ post, postedBy }) => {
                 w={36}
                 color={"gray.light"}
               >
-                {formatDistanceToNow(new Date(post.createdAt))} ago
+                {formatDistanceToNow(new Date(posts.createdAt))} ago
               </Text>
               {currentuser?._id === data?._id && (
                 <DeleteIcon onClick={handleDeletePost} />
               )}
             </Flex>
           </Flex>
-          <Text fontSize={"sm"}>{post.text}</Text>
-          {post.img && (
+          <Text fontSize={"sm"}>{posts.text}</Text>
+          {posts.img && (
             <Box
               borderRadius={6}
               overflow={"hidden"}
               border={"1px solid"}
               borderColor={"gray.light"}
             >
-              <Image src={post.img} w={"full"} />
+              <Image src={posts.img} w={"full"} />
             </Box>
           )}
           <Flex gap={3} my={1}>
-            <Actions post={post} />
+            <Actions post={posts} />
           </Flex>
         </Flex>
       </Flex>
