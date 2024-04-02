@@ -4,6 +4,7 @@ import { Button, Flex, Spinner } from "@chakra-ui/react";
 import PostS from "../components/PostS";
 import useGetuser from "../hooks/useGetuser";
 import useGetPosts from "../hooks/useGetPosts";
+import CreatePost from "../components/CreatePost";
 
 const UserPage = () => {
   const { Loading, user } = useGetuser();
@@ -30,6 +31,7 @@ const UserPage = () => {
       {posts.map((post, id) => (
         <PostS key={id} post={post} postedBy={post.postedBy} />
       ))}
+      <CreatePost />
     </>
   );
 };

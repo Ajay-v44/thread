@@ -27,7 +27,11 @@ import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
 import { useRecoilState } from "recoil";
 import PostAtom from "../atoms/PostAtom";
+import { useParams } from "react-router-dom";
+import UserAtom from "../atoms/UserAtom";
 const CreatePost = () => {
+  const user = useRecoilState(UserAtom);
+  const { username } = useParams();
   const [posts, setposts] = useRecoilState(PostAtom);
   const [Loading, setLoading] = useState(false);
   const toast = useShowToast();
@@ -56,7 +60,9 @@ const CreatePost = () => {
         img: imgUrl,
       });
       if (res.status === 201) {
-        setposts([res.data.newPost,...posts])
+        if (username === user.username) {
+          setposts([res.data.newPost, ...posts]);
+        }
         toast("Sucess", res.data.message, "success");
       }
     } catch (err) {

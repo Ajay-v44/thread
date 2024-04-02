@@ -11,6 +11,7 @@ const Homepage = () => {
   const [Post, setPosts] = useState([]);
   useEffect(() => {
     const getfeedPosts = async () => {
+      setLoading([]);
       try {
         const res = await axios.get("/api/post/feed");
         setPosts(res.data);
@@ -34,7 +35,7 @@ const Homepage = () => {
         <Button>Follow some users to see the feed</Button>
       )}
       {Post.map((post, index) => (
-        <PostS key={index} post={post} postedBy={post.postedBy}/>
+        <PostS key={index} post={post} postedBy={post.postedBy} />
       ))}
     </>
   );

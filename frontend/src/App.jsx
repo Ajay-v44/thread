@@ -32,7 +32,7 @@ function App() {
         <Route path="/:username" element={<UserPage />} />
         <Route path="/:username/post/:pid" element={<PostPage />} />
       </Routes>
-      {user && <CreatePost />}
+     
 
     </Container>
   );
