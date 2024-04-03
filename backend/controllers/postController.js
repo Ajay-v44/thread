@@ -110,6 +110,29 @@ const replyToPost = async (req, res) => {
     console.log(err.message);
   }
 };
+const deleteReplies = async (req, res) => {
+  try {
+    const { uid, pid, _id } = req.body;
+    const post = await Post.findById(pid);
+    if (uid !== req.user._id.toString())
+      return res.status(400).json({ message: "You Cant Delete Others Posts" });
+    const indx = post.replies.findIndex(
+      (reply) => reply._id.toString() === _id
+    );
+
+    if (indx >= 0) {
+      post.replies.splice(indx, 1);
+      await post.save();
+      console.log(post);
+      return res.status(200).json({ message: "Reply deleted" });
+    } else {
+      return res.status(404).json({ message: "Reply not found" });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ error: err.message });
+  }
+};
 
 const getFeedPost = async (req, res) => {
   try {
@@ -140,4 +163,5 @@ export {
   likeUnlikePost,
   replyToPost,
   getFeedPost,
+  deleteReplies,
 };
