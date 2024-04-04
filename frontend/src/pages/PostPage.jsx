@@ -82,7 +82,7 @@ const PostPage = () => {
           </Flex>
           <Divider my={4} />
           {post.replies &&
-            post.replies.map((reply, id) => <Comment key={id} reply={reply} />)}
+            post.replies.map((reply, id) => <Comment key={id} reply={reply} pid={post._id}/>)}
         </>
       )}
     </>
